@@ -2,7 +2,7 @@
 
 ##hsocket
 
-Hsocket luokkaa on testattu avaamalla kaksi sockettia toinen vastaanottamaan ja toinen lähettämaan. Näin saadaan testattu hsocket, luokan bind-, connect-, ja lähetys- ja vastaanottometodit.
+Hsocket luokkaa on testattu avaamalla kaksi sockettia toinen vastaanottamaan ja toinen lähettämään. Näin saadaan testattu hsocket, luokan bind-, connect-, ja lähetys- ja vastaanottometodit.
 
 Testejä on kaksi, joista toinen testaa blokkaavia socketteja ja toinen ei-blokkaavia socketteja.
 
