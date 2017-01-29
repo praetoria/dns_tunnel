@@ -16,8 +16,13 @@
 // amount of sockets
 int hsocket::socket_n = 0;
 
+/* Constructor for the hsocket.
+ * At the moment this does not support TCP fully
+ * so only call it with hsocket::UDP
+ */
 hsocket::hsocket(hsocket::socket_t type) : type(type) {
 #ifdef WIN32
+    // Only initiate Winsock2 if there are no sockets open
     if (socket_n == 0) {
         WSADATA wsaData;
         int iResult = WSAStartup(MAKEWORD(2,2),&wsaData);
@@ -40,16 +45,34 @@ void hsocket::init(uint16_t port, uint32_t address, struct sockaddr_in& addr) {
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = address;
 }
+
+/* hsocket::good()
+ * used to see if socket is still good, or connnected (TCP).
+ * In case of an error the value
+ * of the socket is set to INVALID_SOCKET
+ */
 int hsocket::good() {
     return s != INVALID_SOCKET;
 }
+
+/* hsocket::connect(port,addr)
+ * With UDP sockets this is used to specify the address
+ * that the packets are sent to through the socket.
+ * UDP is actually connectionless, but this is called connect
+ * so that the use would be consistent with TCP and UDP sockets.
+ */
 void hsocket::connect(uint16_t port,const std::string& addr) {
     connect(port,ipton(addr));
 }
+/* With this connect, the addr has to be in network byte order.
+ */
 void hsocket::connect(uint16_t port,uint32_t addr) {
     init(port,addr,send_addr);
     send_len = sizeof(send_addr);
 }
+/* hsocket::bind(port,addr)
+ * starts listening on the port and interface
+ */
 void hsocket::bind(uint16_t port,const std::string& addr) {
     bind(port,ipton(addr));
 }
@@ -63,6 +86,7 @@ void hsocket::close() {
         s = INVALID_SOCKET;
         socket_n--;
 #ifdef WIN32
+        // We should cleanup if this is the last open socket
         if (socket_n == 0)
             WSACleanup();
 #endif
@@ -75,6 +99,9 @@ hsocket& hsocket::operator<<(const std::string& data) {
     }
     return *this;
 }
+/* used to set the socket into either blocking or nonblocking mode
+ * e.g. s << hsocket::NONBLOCKING
+ */
 hsocket& hsocket::operator<<(const block_mode_t mode) {
 #ifdef WIN32
     u_long nMode = (mode == NONBLOCKING) ? 1 : 0;
