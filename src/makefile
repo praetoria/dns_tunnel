@@ -3,17 +3,36 @@ CFLAGS=-c
 LD=g++
 LFLAGS=--std=c++14
 OBJECTS=ip_utility.o hsocket.o
+EXT=app
+WINE=
 
-tests: test.bin
-	@( ./test.bin && \
-	echo "All tests passed" )&\
+
+all: tests
+
+win: CC=/usr/bin/x86_64-w64-mingw32-g++
+win: CFLAGS=-c -DWIN32_LEAN_AND_MEAN
+win: LD=/usr/bin/x86_64-w64-mingw32-g++
+win: LDFLAGS=--std=c++14 -lws2_32 -lmsvcrt -lkernel32 -Lsubsystem,console -static-libstdc++ -static-libgcc -Wl,-Bstatic -lstdc++ -lpthread
+win: EXT=exe
+win: WINE=wine
+
+win: all
+	
+
+tests: test.${EXT}
+	@${WINE} ./test.${EXT} & \
 	echo -n "UDP socket test ok" | nc 127.0.0.1 1337 -u
 
-test.bin: ${OBJECTS} test.o
-	${LD} ${OBJECTS} test.o -o test.bin
+test.${EXT}: ${OBJECTS} test.o
+	${LD} ${OBJECTS} test.o -o test.${EXT} ${LDFLAGS}
 
 test.o: tests/main.cpp
 	${CC} ${CFLAGS} tests/main.cpp -o test.o
 
 %.o : %.cpp %.h
 	${CC} ${CFLAGS} $< -o $@
+
+PHONY.: clean win
+
+clean:
+	rm ${OBJECTS} test.o

@@ -4,6 +4,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
+extern "C" WINSOCK_API_LINKAGE const char* WSAAPI inet_pton(int af, const char* src, void* dest);
 extern "C" WINSOCK_API_LINKAGE const char* WSAAPI inet_ntop(int af, const void* src,
 char *dst, socklen_t size);
 #else
