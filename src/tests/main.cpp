@@ -1,18 +1,39 @@
 #include <iostream>
+#include <vector>
 #include "../ip_utility.h"
 #include "../hsocket.h"
 
-void test_listen_udp (int port, const std::string& ip);
+std::string test_listen_udp (int& success);
 
 int main(int argc, char** argv) {
-    test_listen_udp(1337,"127.0.0.1");
-    return 0;
+    std::cout << "Running tests...\n";
+    std::vector<std::string(*)(int&)> tests = { test_listen_udp };
+    int succeeded = tests.size();
+    for ( auto test : tests) {
+        int success = 0;
+        std::string test_name = test(success);
+        if (success) {
+            std::cout << "Success: ";
+        } else {
+            std::cout << "Fail: ";
+            succeeded--;
+        }
+        std::cout << test_name << '\n';
+    }
+    if (succeeded == tests.size()) {
+        std::cout << "All tests passed!\n";
+        return 0;
+    } else {
+        std::cout << succeeded << " tests passed, " << tests.size()-succeeded << " tests failed\n";
+        return 1;
+    }
 }
 
-void test_listen_udp (int port, const std::string& ip) {
+std::string test_listen_udp (int& success) {
     hsocket s(hsocket::UDP);
-    s.bind(port,ip);
+    s.bind(1337,"127.0.0.1");
     std::string data;
     s >> data;
-    std::cout << data << '\n';
+    success = data == "udp_listen_test";
+    return "UDP listen test";
 }

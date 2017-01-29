@@ -75,6 +75,21 @@ hsocket& hsocket::operator<<(const std::string& data) {
     }
     return *this;
 }
+hsocket& hsocket::operator<<(const block_mode_t mode) {
+#ifdef WIN32
+    u_long nMode = (mode == NONBLOCKING) ? 1 : 0;
+    if (ioctlsocket (s, FIONBIO, &nMode) == SOCKET_ERROR) {
+        this->close();
+    }
+#else
+    int flags = fcntl(s,F_GETFL);
+    flags = (mode == NONBLOCKING) ? flags | O_NONBLOCK : flags & ~O_NONBLOCK;
+    if (fcntl(s, F_SETFL, flags) != 0) {
+        this->close();
+    }
+#endif
+    return *this;
+}
 hsocket& hsocket::operator>>(std::string& data) {
     char recieved[8190];
     struct sockaddr_in dummy;

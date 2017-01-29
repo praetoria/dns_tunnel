@@ -21,7 +21,7 @@ win: all
 
 tests: test.${EXT}
 	@${WINE} ./test.${EXT} & \
-	echo -n "UDP socket test ok" | nc 127.0.0.1 1337 -u
+	echo -n "udp_listen_test" | nc 127.0.0.1 1337 -u
 
 test.${EXT}: ${OBJECTS} test.o
 	${LD} ${OBJECTS} test.o -o test.${EXT} ${LDFLAGS}

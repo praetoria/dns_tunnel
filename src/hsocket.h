@@ -13,7 +13,9 @@
 class hsocket {
     public:
     enum socket_t { TCP, UDP };
+    enum block_mode_t { NONBLOCKING, BLOCKING };
     hsocket(socket_t);
+    hsocket& operator<<(const block_mode_t);
     hsocket& operator<<(const std::string&);
     hsocket& operator>>(std::string&);
     int good();
