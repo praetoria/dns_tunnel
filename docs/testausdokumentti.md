@@ -12,4 +12,4 @@ Testit voidaan ajaa suorittamalla ```make``` tai ```make win``` komento src kans
 
 Jos halutaan ajaa vain testit se onnistuu ajamalla ```make tests```.
 
-Huomioi, että ohjelmaa ei ole tarkoitettu käännettävän windowsissa vaan vain linuxissa make-ohjelmalla.
+Huomioi, että ohjelmaa ei ole tarkoitettu käännettävän windowsissa vaan vain linuxissa make-ohjelmalla ja gcc:llä.
