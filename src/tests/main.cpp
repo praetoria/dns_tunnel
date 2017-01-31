@@ -75,7 +75,8 @@ std::string test_nonblocking_udp (int& success) {
             connector << data;
             sent = 1;
         } else {
-            break;
+            if (recieved.length())
+                break;
         }
     }
     listener.close();
