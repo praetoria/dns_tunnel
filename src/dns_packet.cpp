@@ -49,6 +49,19 @@ bool operator==(const dns::QUERY& lhs, const dns::QUERY& rhs) {
         return false;
     return true;
 }
+bool operator!=(const dns::RES_RECORD& lhs, const dns::RES_RECORD& rhs) {
+    return !(lhs == rhs);
+}
+bool operator==(const dns::RES_RECORD& lhs, const dns::RES_RECORD& rhs) {
+    if (lhs.name != rhs.name) return false;
+    if (lhs.data != rhs.data) return false;
+    if (lhs.resource.type != rhs.resource.type
+            || lhs.resource._class != rhs.resource._class
+            || lhs.resource.ttl != rhs.resource.ttl
+            || lhs.resource.data_len != rhs.resource.data_len)
+        return false;
+    return true;
+}
 
 
 /* dns_packet member functions */

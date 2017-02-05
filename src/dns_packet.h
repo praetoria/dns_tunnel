@@ -77,6 +77,8 @@ bool operator==(const dns::DNS_HEADER& lhs, const dns::DNS_HEADER& rhs);
 bool operator!=(const dns::DNS_HEADER& lhs, const dns::DNS_HEADER& rhs);
 bool operator==(const dns::QUERY& lhs, const dns::QUERY& rhs);
 bool operator!=(const dns::QUERY& lhs, const dns::QUERY& rhs);
+bool operator!=(const dns::RES_RECORD& lhs, const dns::RES_RECORD& rhs);
+bool operator==(const dns::RES_RECORD& lhs, const dns::RES_RECORD& rhs);
 
 /* the actual dns_packet class */
 class dns_packet {

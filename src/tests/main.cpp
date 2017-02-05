@@ -21,10 +21,11 @@ class dns_test_p : public dns_packet {
 std::string test_udp (int& success);
 std::string test_nonblocking_udp (int& success);
 std::string test_dns_to_str_questions (int& success);
+std::string test_dns_to_str_answers (int& success);
 
 int main(int argc, char** argv) {
     std::cout << "Running tests...\n";
-    std::vector<std::string(*)(int&)> tests = { test_udp, test_nonblocking_udp, test_dns_to_str_questions };
+    std::vector<std::string(*)(int&)> tests = { test_udp, test_nonblocking_udp, test_dns_to_str_questions, test_dns_to_str_answers };
     int succeeded = tests.size();
     for ( auto test : tests) {
         int success = 0;
@@ -131,4 +132,47 @@ std::string test_dns_to_str_questions (int& success) {
         success = 0;
     }
     return "DNS to str test with questions";
+}
+std::string test_dns_to_str_answers (int& success) {
+    // create a dns query packet with two questions
+    dns_test_p first (1337,dns::query_t);
+    first.add_question("helsinki.fi", dns::A);
+    // add response
+    first.add_response(ipton("127.0.0.1"),dns::A);
+
+    // create the second from the byte representation of the first
+    std::string d = first.str();
+    dns_test_p second(d);
+    
+    success = 1;
+    // compare the two
+    if (first.get_header() != second.get_header()) {
+        std::cout << "testing headers failed\n";
+        first.print_header();
+        second.print_header();
+        success = 0;
+    }
+
+    if (first.questions.size() == second.questions.size()) {
+        for (int i = 0 ; i < first.questions.size(); ++i) {
+            if (first.questions[i] != second.questions[i]) {
+                first.print_questions();
+                second.print_questions();
+                success = 0;
+                break;
+            }
+        }
+    } else if (first.responses.size() == second.responses.size()) {
+        for (int i = 0 ; i < first.responses.size(); ++i) {
+            if (first.responses[i] != second.responses[i]) {
+                first.print_responses();
+                second.print_responses();
+                success = 0;
+                break;
+            }
+        }
+    } else {
+        success = 0;
+    }
+    return "DNS to str test with questions and answers";
 }
