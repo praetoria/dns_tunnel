@@ -184,6 +184,8 @@ std::string test_dns_to_str_answers (int& success) {
 std::string test_dns_query (int& success) {
     // title
     std::string ret = "DNS real dns query for helsinki.fi";
+
+    // form a network byte order data string
     std::string expected_ip = iptonstr("128.214.222.24");
     hsocket s(hsocket::UDP);
     // Googles DNS
