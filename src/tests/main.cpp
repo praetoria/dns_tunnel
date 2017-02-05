@@ -22,10 +22,11 @@ std::string test_udp (int& success);
 std::string test_nonblocking_udp (int& success);
 std::string test_dns_to_str_questions (int& success);
 std::string test_dns_to_str_answers (int& success);
+std::string test_dns_query (int& success);
 
 int main(int argc, char** argv) {
     std::cout << "Running tests...\n";
-    std::vector<std::string(*)(int&)> tests = { test_udp, test_nonblocking_udp, test_dns_to_str_questions, test_dns_to_str_answers };
+    std::vector<std::string(*)(int&)> tests = { test_udp, test_nonblocking_udp, test_dns_to_str_questions, test_dns_to_str_answers, test_dns_query };
     int succeeded = tests.size();
     for ( auto test : tests) {
         int success = 0;
@@ -175,4 +176,53 @@ std::string test_dns_to_str_answers (int& success) {
         success = 0;
     }
     return "DNS to str test with questions and answers";
+}
+/*
+ * Asks google dns 8.8.8.8 for an A record of helsinki.fi.
+ * expected result is 128.214.222.24.
+ */
+std::string test_dns_query (int& success) {
+    // title
+    std::string ret = "DNS real dns query for helsinki.fi";
+    std::string expected_ip = iptonstr("128.214.222.24");
+    hsocket s(hsocket::UDP);
+    // Googles DNS
+    s.connect(53,"8.8.8.8");
+    // create the packet
+    dns_test_p query(1337,dns::query_t);
+    query.add_question("helsinki.fi",dns::A);
+    std::string recieved;
+    int counter = 0;
+    // try to send 5 times
+    while (recieved.empty()) {
+        s << query.str();
+        s >> recieved;
+        counter++;
+        if (counter > 5) {
+            success = 0;
+            std::cout << "retry limit for DNS query to 8.8.8.8 exceeded (> 5)\n";
+            return ret;
+        }
+    }
+    // check the response
+    success = 0;
+    dns_test_p resp(recieved);
+
+    if (resp.get_header().rcode != dns::NON_ERROR) {
+        std::cout << "Error: query failed\n";
+        resp.print_header();
+        return ret;
+    }
+    if (!resp.responses.size()) {
+        std::cout << "no responses from 8.8.8.8\n";
+        return ret;
+    }
+
+    for (auto r : resp.responses) {
+        if (ntohs(r.resource.type) == dns::A) {
+            success |= r.data == expected_ip;
+        }
+    }
+
+    return ret;
 }

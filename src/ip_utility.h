@@ -5,4 +5,5 @@
  * Transforms an IP address in a string into a uint32_t into the network byte order.
  */
 uint32_t ipton(const std::string& ipstr);
+std::string iptonstr(const std::string& ipstr);
 #endif

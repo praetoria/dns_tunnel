@@ -18,3 +18,11 @@ uint32_t ipton(const std::string& ipstr) {
     return sa.sin_addr.s_addr;
     // TODO ipv6
 }
+std::string iptonstr(const std::string& ipstr) {
+    struct sockaddr_in sa;
+    inet_pton(AF_INET,ipstr.c_str(), &(sa.sin_addr));
+    uint32_t ip = sa.sin_addr.s_addr;
+    std::string ret((char*)&ip,sizeof(ip));
+    return ret;
+    // TODO ipv6
+}
