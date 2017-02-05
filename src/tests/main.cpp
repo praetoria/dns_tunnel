@@ -10,11 +10,11 @@
 #include "../hsocket.h"
 #include "../dns_packet.h"
 
-class dns_test_p : public dns_packet {
+class dns_test_t : public dns_packet {
     public:
         dns::DNS_HEADER get_header(){ return this->header; }
-        dns_test_p(unsigned short id, dns::dns_type type) : dns_packet(id,type) {};
-        dns_test_p(const std::string& str) : dns_packet(str) {};
+        dns_test_t(unsigned short id, dns::dns_type type) : dns_packet(id,type) {};
+        dns_test_t(const std::string& str) : dns_packet(str) {};
 };
 
 
@@ -103,13 +103,13 @@ std::string test_nonblocking_udp (int& success) {
 
 std::string test_dns_to_str_questions (int& success) {
     // create a dns query packet with two questions
-    dns_test_p first (1337,dns::query_t);
+    dns_test_t first (1337,dns::query_t);
     first.add_question("helsinki.fi", dns::A);
     first.add_question("helsinki.fi", dns::ANY);
 
     // create the second from the byte representation of the first
     std::string d = first.str();
-    dns_test_p second(d);
+    dns_test_t second(d);
     
     success = 1;
     // compare the two
@@ -136,14 +136,14 @@ std::string test_dns_to_str_questions (int& success) {
 }
 std::string test_dns_to_str_answers (int& success) {
     // create a dns query packet with two questions
-    dns_test_p first (1337,dns::query_t);
+    dns_test_t first (1337,dns::query_t);
     first.add_question("helsinki.fi", dns::A);
     // add response
     first.add_response(ipton("127.0.0.1"),dns::A);
 
     // create the second from the byte representation of the first
     std::string d = first.str();
-    dns_test_p second(d);
+    dns_test_t second(d);
     
     success = 1;
     // compare the two
@@ -189,7 +189,7 @@ std::string test_dns_query (int& success) {
     // Googles DNS
     s.connect(53,"8.8.8.8");
     // create the packet
-    dns_test_p query(1337,dns::query_t);
+    dns_test_t query(1337,dns::query_t);
     query.add_question("helsinki.fi",dns::A);
     std::string recieved;
     int counter = 0;
@@ -206,7 +206,7 @@ std::string test_dns_query (int& success) {
     }
     // check the response
     success = 0;
-    dns_test_p resp(recieved);
+    dns_test_t resp(recieved);
 
     if (resp.get_header().rcode != dns::NON_ERROR) {
         std::cout << "Error: query failed\n";
