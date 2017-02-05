@@ -8,13 +8,23 @@
 #include <vector>
 #include "../ip_utility.h"
 #include "../hsocket.h"
+#include "../dns_packet.h"
+
+class dns_test_p : public dns_packet {
+    public:
+        dns::DNS_HEADER get_header(){ return this->header; }
+        dns_test_p(unsigned short id, dns::dns_type type) : dns_packet(id,type) {};
+        dns_test_p(const std::string& str) : dns_packet(str) {};
+};
+
 
 std::string test_udp (int& success);
 std::string test_nonblocking_udp (int& success);
+std::string test_dns_to_str_questions (int& success);
 
 int main(int argc, char** argv) {
     std::cout << "Running tests...\n";
-    std::vector<std::string(*)(int&)> tests = { test_udp, test_nonblocking_udp };
+    std::vector<std::string(*)(int&)> tests = { test_udp, test_nonblocking_udp, test_dns_to_str_questions };
     int succeeded = tests.size();
     for ( auto test : tests) {
         int success = 0;
@@ -39,6 +49,8 @@ int main(int argc, char** argv) {
 /* Tests are defined here
  * 
  */
+
+// hsocket tests start
 
 std::string test_udp (int& success) {
     hsocket s(hsocket::UDP);
@@ -83,4 +95,40 @@ std::string test_nonblocking_udp (int& success) {
     connector.close();
     success = recieved == data;
     return "UDP nonblocking test";
+}
+
+// dns tests start
+
+std::string test_dns_to_str_questions (int& success) {
+    // create a dns query packet with two questions
+    dns_test_p first (1337,dns::query_t);
+    first.add_question("helsinki.fi", dns::A);
+    first.add_question("helsinki.fi", dns::ANY);
+
+    // create the second from the byte representation of the first
+    std::string d = first.str();
+    dns_test_p second(d);
+    
+    success = 1;
+    // compare the two
+    if (first.get_header() != second.get_header()) {
+        std::cout << "testing headers failed\n";
+        first.print_header();
+        second.print_header();
+        success = 0;
+    }
+
+    if (first.questions.size() == second.questions.size()) {
+        for (int i = 0 ; i < 2; ++i) {
+            if (first.questions[i] != second.questions[i]) {
+                first.print_questions();
+                second.print_questions();
+                success = 0;
+                break;
+            }
+        }
+    } else {
+        success = 0;
+    }
+    return "DNS to str test with questions";
 }
