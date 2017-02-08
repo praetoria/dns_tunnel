@@ -9,7 +9,12 @@
 #include "../ip_utility.h"
 #include "../hsocket.h"
 #include "../dns_packet.h"
+#include "../message.h"
 
+/* A subclass for testing purposes,
+ * where the header of the dns_packet 
+ * is exposed through a member function
+ */
 class dns_test_t : public dns_packet {
     public:
         dns::DNS_HEADER get_header(){ return this->header; }
@@ -18,26 +23,34 @@ class dns_test_t : public dns_packet {
 };
 
 
+// UDP socket tests
 std::string test_udp (int& success);
 std::string test_nonblocking_udp (int& success);
+// DNS packet tests
 std::string test_dns_to_str_questions (int& success);
 std::string test_dns_to_str_answers (int& success);
 std::string test_dns_query (int& success);
+// message class tests
+std::string test_message_to_str (int& success);
 
 int main(int argc, char** argv) {
     std::cout << "Running tests...\n";
-    std::vector<std::string(*)(int&)> tests = { test_udp, test_nonblocking_udp, test_dns_to_str_questions, test_dns_to_str_answers, test_dns_query };
+    std::vector<std::string(*)(int&)> tests = {
+        test_udp, test_nonblocking_udp,
+        test_dns_to_str_questions, test_dns_to_str_answers, test_dns_query,
+        test_message_to_str };
+
     int succeeded = tests.size();
     for ( auto test : tests) {
         int success = 0;
         std::string test_name = test(success);
         if (success) {
-            std::cout << "Success: ";
+            std::cout << "\e[38;5;40mSuccess: ";
         } else {
-            std::cout << "Fail: ";
+            std::cout << "\e[38;5;196mFail: ";
             succeeded--;
         }
-        std::cout << test_name << '\n';
+        std::cout << test_name << "\e[39m\n";
     }
     if (succeeded == tests.size()) {
         std::cout << "All tests passed!\n";
@@ -224,6 +237,37 @@ std::string test_dns_query (int& success) {
         if (ntohs(r.resource.type) == dns::A) {
             success |= r.data == expected_ip;
         }
+    }
+
+    return ret;
+}
+
+
+std::string test_message_to_str (int& success) {
+    std::string ret = "Message to str test";
+    message hbeat(message::HEARTBEAT,"test_data");
+    std::string bytes = hbeat.str();
+    message result(bytes);
+    success = 1;
+    if (result != hbeat) {
+        std::cout << "HEARTBEAT message failed\n";
+        success = 0;
+    }
+
+    message ok(message::OK, "test_data");
+    bytes = ok.str();
+    message ok_result(bytes);
+    if (ok_result != ok) {
+        std::cout << "OK message failed\n";
+        success = 0;
+    }
+
+    message not_ok(message::ERROR, "test_data");
+    bytes = not_ok.str();
+    message not_ok_result(bytes);
+    if (not_ok == not_ok_result) {
+        std::cout << "ERROR message failed\n";
+        success = 0;
     }
 
     return ret;
