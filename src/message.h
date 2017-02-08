@@ -4,7 +4,7 @@
 
 class message {
     public:
-    enum message_type : uint8_t { HEARTBEAT, OK, ERROR };
+    enum message_type : uint8_t { HEARTBEAT, OK, M_ERROR };
     message_type type;
     std::string data;
 

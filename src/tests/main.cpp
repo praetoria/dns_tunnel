@@ -277,7 +277,7 @@ std::string test_message_to_str (int& success) {
         success = 0;
     }
 
-    message not_ok(message::ERROR, "error_test");
+    message not_ok(message::M_ERROR, "error_test");
     bytes = not_ok.str();
     message not_ok_result(bytes);
     if (not_ok == not_ok_result) {

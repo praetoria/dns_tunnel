@@ -14,18 +14,18 @@ message::message(message_type type, std::string data) : type(type), data(data) {
  */
 message::message(std::string bytes) {
     if (bytes.length() < 3) {
-        this->type = ERROR;
+        this->type = M_ERROR;
         return;
     }
     this->type = (message_type)bytes[0];
     if (this->type != HEARTBEAT && this->type != OK) {
-        this->type = ERROR;
+        this->type = M_ERROR;
         return;
     }
     uint16_t data_len = *(uint16_t*)&(bytes[1]);
     data_len = ntohs(data_len);
     if (data_len + 3 > bytes.length()) {
-        this->type = ERROR;
+        this->type = M_ERROR;
         return;
     }
     this->data = bytes.substr(3,data_len);

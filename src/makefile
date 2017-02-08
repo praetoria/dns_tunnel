@@ -20,7 +20,7 @@ win: all
 	
 
 tests: test.${EXT}
-	@${WINE} ./test.${EXT}
+	${WINE} ./test.${EXT}
 
 test.${EXT}: ${OBJECTS} test.o
 	${LD} ${OBJECTS} test.o -o test.${EXT} ${LDFLAGS}
