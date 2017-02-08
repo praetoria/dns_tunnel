@@ -18,6 +18,16 @@ uint32_t ipton(const std::string& ipstr) {
     return sa.sin_addr.s_addr;
     // TODO ipv6
 }
+std::string ntoipstr(const std::string& ipstr) {
+    std::string ret;
+    if (ipstr.length() != 4) return ret;
+    struct sockaddr_in sa;
+    char str[INET_ADDRSTRLEN] = {0};
+    sa.sin_addr.s_addr = *(uint32_t*)ipstr.c_str();
+    inet_ntop(AF_INET,&(sa.sin_addr),str,INET_ADDRSTRLEN);
+    ret = str;
+    return ret;
+}
 std::string iptonstr(const std::string& ipstr) {
     struct sockaddr_in sa;
     inet_pton(AF_INET,ipstr.c_str(), &(sa.sin_addr));

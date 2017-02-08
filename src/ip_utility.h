@@ -6,4 +6,5 @@
  */
 uint32_t ipton(const std::string& ipstr);
 std::string iptonstr(const std::string& ipstr);
+std::string ntoipstr(const std::string& ipstr);
 #endif

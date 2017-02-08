@@ -43,6 +43,7 @@ std::string test_convert_util (int& success);
 // tunnel_dns tests
 std::string test_tunnel_dns_out_q (int& success);
 std::string test_tunnel_dns_in_out_q (int& success);
+std::string test_tunnel_dns_out_r (int& success);
 
 int main(int argc, char** argv) {
     std::cout << "Running tests...\n";
@@ -52,7 +53,8 @@ int main(int argc, char** argv) {
         test_message_to_str,
         test_convert_util,
         test_tunnel_dns_out_q,
-        test_tunnel_dns_in_out_q};
+        test_tunnel_dns_in_out_q,
+        test_tunnel_dns_out_r };
 
     int succeeded = tests.size();
     for ( auto test : tests) {
@@ -337,6 +339,31 @@ std::string test_tunnel_dns_in_out_q (int& success) {
     success = (data == result) ? 1 : 0;
     if (!success) {
         std::cout << "Output was " << result << " instead of " << data << '\n';
+    }
+    return ret;
+}
+std::string test_tunnel_dns_out_r (int& success) {
+    std::string ret = "Tunnel DNS outgoing response test";
+    tunnel_dns tun(tunnel::OUTGOING, dns::response_t, dns::A,"helsinki.fi");
+    std::string data = "test", result;
+    std::vector<std::string> responses;
+    std::vector<std::string> results;
+    results.push_back("0.4.116.101");
+    results.push_back("1.115.116.0");
+    tun.set_response_limit(10);
+    tun << data;
+    for (int i = 0; i < 10; i++) {
+        std::string temp;
+        tun >> temp;
+        if (temp.empty()) break;
+        std::string ip = ntoipstr(temp);
+        responses.push_back(ip);
+    }
+    success = (responses == results) ? 1 : 0;
+    if (!success) {
+        for (auto a : responses) {
+            std::cout << "IP " << a << '\n';
+        }
     }
     return ret;
 }
