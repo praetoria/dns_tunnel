@@ -2,7 +2,7 @@ CC=g++
 CFLAGS=-c
 LD=g++
 LFLAGS=--std=c++14
-OBJECTS=ip_utility.o hsocket.o dns_packet.o message.o
+OBJECTS=ip_utility.o hsocket.o dns_packet.o message.o tunnel_dns.o convert_utility.o
 EXT=app
 WINE=
 

@@ -10,6 +10,7 @@
 #include "../hsocket.h"
 #include "../dns_packet.h"
 #include "../message.h"
+#include "../tunnel_dns.h"
 
 /* A subclass for testing purposes,
  * where the header of the dns_packet 
@@ -32,13 +33,16 @@ std::string test_dns_to_str_answers (int& success);
 std::string test_dns_query (int& success);
 // message class tests
 std::string test_message_to_str (int& success);
+// tunnel_dns tests
+std::string test_tunnel_dns_out_q (int& success);
 
 int main(int argc, char** argv) {
     std::cout << "Running tests...\n";
     std::vector<std::string(*)(int&)> tests = {
         test_udp, test_nonblocking_udp,
         test_dns_to_str_questions, test_dns_to_str_answers, test_dns_query,
-        test_message_to_str };
+        test_message_to_str,
+        test_tunnel_dns_out_q};
 
     int succeeded = tests.size();
     for ( auto test : tests) {
@@ -245,7 +249,8 @@ std::string test_dns_query (int& success) {
 
 std::string test_message_to_str (int& success) {
     std::string ret = "Message to str test";
-    message hbeat(message::HEARTBEAT,"test_data");
+
+    message hbeat(message::HEARTBEAT,"heartbeat_test");
     std::string bytes = hbeat.str();
     message result(bytes);
     success = 1;
@@ -254,7 +259,7 @@ std::string test_message_to_str (int& success) {
         success = 0;
     }
 
-    message ok(message::OK, "test_data");
+    message ok(message::OK, "oktest");
     bytes = ok.str();
     message ok_result(bytes);
     if (ok_result != ok) {
@@ -262,7 +267,7 @@ std::string test_message_to_str (int& success) {
         success = 0;
     }
 
-    message not_ok(message::ERROR, "test_data");
+    message not_ok(message::ERROR, "error_test");
     bytes = not_ok.str();
     message not_ok_result(bytes);
     if (not_ok == not_ok_result) {
@@ -270,5 +275,29 @@ std::string test_message_to_str (int& success) {
         success = 0;
     }
 
+    return ret;
+}
+
+
+std::string test_tunnel_dns_out_q (int& success) {
+    std::string ret = "Tunnel DNS outgoing query test";
+    tunnel_dns tun(tunnel::OUTGOING,dns::query_t,dns::A,"helsinki.fi");
+    std::string data = "AAAA";
+    tun << data;
+    std::string output;
+    tun >> output;
+    success = (output == "41414141.helsinki.fi") ? 1 : 0;
+    if (!success) {
+        std::cout << "Output was " << output << '\n';
+    }
+    data = "AAA AAA AAA AAA AAA AAA AAA AAAA";
+    tun << data;
+    tun >> output;
+    // longer output so it gets split into two labels
+    if (output != "414141204141412041414120414141204141412041414120414141204141.4141.helsinki.fi")
+        success = 0;
+    if (!success) {
+        std::cout << "Output was " << output << '\n';
+    }
     return ret;
 }

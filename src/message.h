@@ -9,7 +9,9 @@ class message {
     std::string data;
 
     message(message_type,std::string);
+    // construct a message from bytes
     message(std::string);
+    // convert a message into bytes
     std::string str() const;
 };
 bool operator!=(const message& lhs, const message& rhs);
