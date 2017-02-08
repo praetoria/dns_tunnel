@@ -10,6 +10,7 @@ class tunnel_dns : protected tunnel {
     std::string data;
     std::string domain;
     std::string data_to_dns();
+    void dns_to_data(std::string);
     int response_limit;
     public:
         tunnel_dns(tunnel_type, dns::dns_type,dns::qtype,std::string);

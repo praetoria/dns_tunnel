@@ -17,3 +17,30 @@ std::string to_hex(const std::string& data, int len) {
     }
     return ret;
 }
+std::string from_hex(const std::string& data) {
+    std::string ret;
+    if (data.length()%2 != 0) return ret;
+    for (int i = 0; i < data.length()-1; i+=2) {
+        int a = hex_to_val(data[i]),
+            b = hex_to_val(data[i+1]);
+
+        if (a < 0 || b < 0) {
+            ret.clear();
+            break;
+        }
+        char c = b | (a << 4);
+        ret.append(1,c);
+    }
+    return ret;
+}
+int hex_to_val(char c) {
+    int ret = -1;
+    if (c <= 'F' && c >= 'A')
+        c = c ^ 0x20; // to lowercase
+    if (c <= 'f' && c >= 'a') {
+        ret = c - 'a' + 10;
+    } else if (c <= '9' && c >= '0') {
+        ret = c - '0';
+    }
+    return ret;
+}

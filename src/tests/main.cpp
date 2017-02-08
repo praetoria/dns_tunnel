@@ -11,6 +11,7 @@
 #include "../dns_packet.h"
 #include "../message.h"
 #include "../tunnel_dns.h"
+#include "../convert_utility.h"
 
 /* A subclass for testing purposes,
  * where the header of the dns_packet 
@@ -27,14 +28,21 @@ class dns_test_t : public dns_packet {
 // UDP socket tests
 std::string test_udp (int& success);
 std::string test_nonblocking_udp (int& success);
+
 // DNS packet tests
 std::string test_dns_to_str_questions (int& success);
 std::string test_dns_to_str_answers (int& success);
 std::string test_dns_query (int& success);
+
 // message class tests
 std::string test_message_to_str (int& success);
+
+// convert utility tests
+std::string test_convert_util (int& success);
+
 // tunnel_dns tests
 std::string test_tunnel_dns_out_q (int& success);
+std::string test_tunnel_dns_in_out_q (int& success);
 
 int main(int argc, char** argv) {
     std::cout << "Running tests...\n";
@@ -42,7 +50,9 @@ int main(int argc, char** argv) {
         test_udp, test_nonblocking_udp,
         test_dns_to_str_questions, test_dns_to_str_answers, test_dns_query,
         test_message_to_str,
-        test_tunnel_dns_out_q};
+        test_convert_util,
+        test_tunnel_dns_out_q,
+        test_tunnel_dns_in_out_q};
 
     int succeeded = tests.size();
     for ( auto test : tests) {
@@ -278,6 +288,17 @@ std::string test_message_to_str (int& success) {
     return ret;
 }
 
+std::string test_convert_util (int& success) {
+    std::string ret = "Convert utility test";
+    std::string data = "0123456789ABCDEFHIJKLMNOPQRSTUVWXYZ";
+    std::string result = to_hex(data,data.length());
+    success = (data == from_hex(result)) ? 1 : 0;
+    if (!success) {
+        std::cout << "Result was " << from_hex(result) << '\n';
+    }
+    return ret;
+}
+
 
 std::string test_tunnel_dns_out_q (int& success) {
     std::string ret = "Tunnel DNS outgoing query test";
@@ -298,6 +319,24 @@ std::string test_tunnel_dns_out_q (int& success) {
         success = 0;
     if (!success) {
         std::cout << "Output was " << output << '\n';
+    }
+    return ret;
+}
+std::string test_tunnel_dns_in_out_q (int& success) {
+    std::string ret = "Tunnel DNS outgoing and incoming query test";
+    tunnel_dns tun_out(tunnel::OUTGOING,dns::query_t,dns::A,"helsinki.fi");
+    tunnel_dns tun_in(tunnel::INCOMING,dns::query_t,dns::A,"helsinki.fi");
+    std::string data = "This is a test", dns_data, result;
+
+    tun_out << data;
+    tun_out >> dns_data;
+
+    tun_in << dns_data;
+    tun_in >> result;
+
+    success = (data == result) ? 1 : 0;
+    if (!success) {
+        std::cout << "Output was " << result << " instead of " << data << '\n';
     }
     return ret;
 }

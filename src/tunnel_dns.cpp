@@ -14,7 +14,7 @@ tunnel_dns& tunnel_dns::operator<<(const std::string& d) {
     if (t_type == OUTGOING) {
         data.append(d);
     } else {
-        // TODO parse the dns query/response
+        this->dns_to_data(d);
     }
     return *this;   
 }
@@ -32,10 +32,12 @@ tunnel_dns& tunnel_dns::operator>>(std::string& d) {
 }
 
 /* Converts data from buffer into a dns record or domain name.
- * At the moment only A type of questions are supported.
+ * At the moment only questions of A type are supported.
  */
 std::string tunnel_dns::data_to_dns() {
     std::string ret;
+    if (this->data.empty())
+        return ret;
     if (d_type != dns::query_t || q_type != dns::A)
         return ret;
     for (int i = 0; i < 2; i++) {
@@ -47,6 +49,25 @@ std::string tunnel_dns::data_to_dns() {
     }
     ret.append(this->domain);
     return ret;
+}
+
+/* Converts data from dns form to raw data and appends it
+ * to the data buffer.
+ * At the moment only questions of A type are supported
+ */
+void tunnel_dns::dns_to_data(std::string d) {
+    if (d_type != dns::query_t || q_type != dns::A)
+        return;
+    size_t end = d.rfind(domain);
+    if (end == std::string::npos) return;
+    std::string subdomain = d.substr(0,end);
+
+    size_t pos = 0, dot = std::string::npos;
+    while ((dot = subdomain.find('.',pos)) != std::string::npos) {
+        std::string hex_data = subdomain.substr(pos,dot-pos);
+        data.append(from_hex(hex_data));
+        pos = dot+1;
+    }
 }
 
 /* Sets how many response records per query we want to
