@@ -1,4 +1,4 @@
-#Viikkopalautus 2 - TiRa labra
+#Viikkopalautus 3 - TiRa labra
 
 Tällä viikolla olen jatkanut testausdokumentin ja toteuttanut dns_packet-luokan, sekä tehnyt sille muutaman testin. Mukana on myös oikean DNS-kyselyn tekevä testi.
 
