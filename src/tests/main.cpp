@@ -348,8 +348,10 @@ std::string test_tunnel_dns_out_r (int& success) {
     std::string data = "test", result;
     std::vector<std::string> responses;
     std::vector<std::string> results;
+
     results.push_back("0.4.116.101");
     results.push_back("1.115.116.0");
+
     tun.set_response_limit(10);
     tun << data;
     for (int i = 0; i < 10; i++) {
