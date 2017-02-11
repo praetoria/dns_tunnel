@@ -1,4 +1,5 @@
 #ifdef WIN32
+#include <winsock2.h>
 #include <windows.h>
 #define usleep Sleep
 #else
@@ -6,6 +7,7 @@
 #endif
 #include <iostream>
 #include <vector>
+#include <string>
 #include "../ip_utility.h"
 #include "../hsocket.h"
 #include "../dns_packet.h"

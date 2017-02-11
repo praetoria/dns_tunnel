@@ -1,9 +1,9 @@
-#include <iostream>
-#include <string>
 #include "hsocket.h"
 #include "dns_packet.h"
 #include "tunnel_dns.h"
 #include "message.h"
+#include <iostream>
+#include <string>
 
 int main(int argc, char** argv) {
     hsocket s(hsocket::UDP);

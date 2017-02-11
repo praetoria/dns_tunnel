@@ -28,7 +28,7 @@ winbin: WINE=wine
 winbin: bin
 	
 
-bin: client.${EXT} server.${EXT}
+bin: server.${EXT} client.${EXT}
 
 tests: test.${EXT}
 	${WINE} ./test.${EXT}

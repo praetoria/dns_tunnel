@@ -1,15 +1,14 @@
+#ifdef WIN32
+#define usleep Sleep
+#else
+#include <unistd.h>
+#endif
 #include <iostream>
 #include <string>
 #include "hsocket.h"
 #include "dns_packet.h"
 #include "tunnel_dns.h"
 #include "message.h"
-#ifdef WIN32
-#include <windows.h>
-#define usleep Sleep
-#else
-#include <unistd.h>
-#endif
 
 
 int main(int argc, char** argv) {
