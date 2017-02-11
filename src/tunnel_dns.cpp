@@ -13,6 +13,8 @@ tunnel_dns::tunnel_dns(tunnel_type t_type, dns::dns_type d_type, dns::qtype q_ty
 tunnel_dns& tunnel_dns::operator<<(const std::string& d) {
     if (t_type == OUTGOING) {
         data.append(d);
+        if (d_type == dns::response_t)
+            response_count = 0;
     } else {
         this->dns_to_data(d);
     }

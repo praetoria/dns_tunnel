@@ -8,7 +8,7 @@ class message {
     message_type type;
     std::string data;
 
-    message(message_type,std::string);
+    message(message_type,std::string data = "");
     
     message(std::string); // construct a message from bytes
     std::string str() const; // convert a message into bytes
