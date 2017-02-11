@@ -7,6 +7,7 @@
 
 int main(int argc, char** argv) {
     hsocket s(hsocket::UDP);
+
     std::string domain = "example.org";
     tunnel_dns tun_in(tunnel::INCOMING, dns::query_t, dns::A, domain);
     tunnel_dns tun_out(tunnel::OUTGOING, dns::response_t, dns::A, domain);
@@ -20,8 +21,10 @@ int main(int argc, char** argv) {
         s >> pkt;
         dns_packet d(pkt);
         std::string qname = d.questions[0].name;
+
         tun_in << qname;
         tun_in >> data;
+
         message m(data);
         std::cout << m.data << '\n';
         tun_out << msg_ok.str();
