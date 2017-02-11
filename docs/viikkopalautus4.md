@@ -9,4 +9,4 @@ Olen myös tehnyt pienet esimerkkiohjelmat asiakkaasta ja palvelimesta. Mitään
 
 Aikaa on kulunut noin 12 tuntia. 
 
-Seuraavaksi alan toteuttamaan itse palvelin- ja asiakas-ohjelmia.
+Seuraavaksi jatkan itse palvelin- ja asiakas-ohjelmien toteuttamista ja toteutan todennäköisesti jonkun hallintaluokan, joka yksinkertaistaa asiakas- ja palvelinohjelmien toimintalooppia.
