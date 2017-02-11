@@ -17,10 +17,16 @@
 
 class hsocket {
     public:
+    class timeout {
+        public:
+        timeout(uint32_t t) : t(t) {};
+        uint32_t t;
+    };
     enum socket_t { TCP, UDP };
     enum block_mode_t { NONBLOCKING, BLOCKING };
     hsocket(socket_t);
     hsocket& operator<<(const block_mode_t);
+    hsocket& operator<<(const timeout t);
     hsocket& operator<<(const std::string&);
     hsocket& operator>>(std::string&);
     int good();

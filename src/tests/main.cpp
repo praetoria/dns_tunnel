@@ -224,14 +224,15 @@ std::string test_dns_query (int& success) {
     query.add_question("helsinki.fi",dns::A);
     std::string recieved;
     int counter = 0;
-    // try to send 5 times
+    // try to send 2 times
+    s << hsocket::timeout(1);
     while (recieved.empty()) {
         s << query.str();
         s >> recieved;
         counter++;
-        if (counter > 5) {
+        if (counter > 2) {
             success = 0;
-            std::cout << "retry limit for DNS query to 8.8.8.8 exceeded (> 5)\n";
+            std::cout << "Error: timeout, retry limit for DNS query to 8.8.8.8 exceeded (> 2)\n";
             return ret;
         }
     }

@@ -117,6 +117,18 @@ hsocket& hsocket::operator<<(const block_mode_t mode) {
 #endif
     return *this;
 }
+hsocket& hsocket::operator<<(const timeout t) {
+#ifdef WIN32
+    DWORD timeout = t.t * 1000;
+    setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout));
+#else
+    struct timeval timeout;
+    timeout.tv_sec = t.t;
+    timeout.tv_usec = 0;
+    setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+#endif
+    return *this;
+}
 hsocket& hsocket::operator>>(std::string& data) {
     char recieved[8190];
     struct sockaddr_in dummy;
