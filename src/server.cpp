@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
     tunnel_dns tun_in(tunnel::INCOMING, dns::query_t, dns::A, domain);
     tunnel_dns tun_out(tunnel::OUTGOING, dns::response_t, dns::A, domain);
     tun_out.set_response_limit(10);
-    message msg_ok(message::OK,"ok");
+    message msg_ok(message::OK,"aoeuthatht");
     std::string pkt,data;
     s.bind(53,"127.0.0.1");
     while (1) {

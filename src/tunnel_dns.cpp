@@ -7,7 +7,7 @@
  * For example:
  * tunnel_dns my_tunnel(tunnel::OUTGOING, dns::query_t, dns::A)
  */
-tunnel_dns::tunnel_dns(tunnel_type t_type, dns::dns_type d_type, dns::qtype q_type, std::string domain) : tunnel(t_type),d_type(d_type),q_type(q_type),domain(domain),response_limit(1),response_count(0) {
+tunnel_dns::tunnel_dns(tunnel_type t_type, dns::dns_type d_type, dns::qtype q_type, std::string domain) : tunnel(t_type),d_type(d_type),q_type(q_type),domain(domain),response_limit(1),response_count(0),response_len(0) {
 }
 
 tunnel_dns& tunnel_dns::operator<<(const std::string& d) {
@@ -43,6 +43,7 @@ std::string tunnel_dns::data_to_dns() {
         return ret;
     if (q_type != dns::A)
         return ret;
+
     if (d_type == dns::query_t) {
         for (int i = 0; i < 2; i++) {
             ret.append(to_hex(this->data,MAX_DNS_LABEL));
@@ -53,8 +54,8 @@ std::string tunnel_dns::data_to_dns() {
         }
         ret.append(this->domain);
     } else {
-        // Max data is calculated like this because there is metadata
-        // for more information check dns_protocol document
+        // Max amount of data is calculated like this because there is
+        // metadata for more information check dns_protocol document
         // (which doesn't exist yet) TODO
         int data_left = response_limit*4 - response_limit - 1;
 
@@ -88,21 +89,42 @@ std::string tunnel_dns::data_to_dns() {
 
 /* Converts data from dns form to raw data and appends it
  * to the data buffer.
- * At the moment only questions of A type are supported
+ * At the moment only A type is supported
  * Only used in INCOMING tunnels.
  */
 void tunnel_dns::dns_to_data(std::string d) {
-    if (d_type != dns::query_t || q_type != dns::A)
+    if (q_type != dns::A)
         return;
-    size_t end = d.rfind(domain);
-    if (end == std::string::npos) return;
-    std::string subdomain = d.substr(0,end);
 
-    size_t pos = 0, dot = std::string::npos;
-    while ((dot = subdomain.find('.',pos)) != std::string::npos) {
-        std::string hex_data = subdomain.substr(pos,dot-pos);
-        data.append(from_hex(hex_data));
-        pos = dot+1;
+    if (d_type == dns::query_t) {
+        size_t end = d.rfind(domain);
+        if (end == std::string::npos) return;
+        std::string subdomain = d.substr(0,end);
+
+        size_t pos = 0, dot = std::string::npos;
+        while ((dot = subdomain.find('.',pos)) != std::string::npos) {
+            std::string hex_data = subdomain.substr(pos,dot-pos);
+            data.append(from_hex(hex_data));
+            pos = dot+1;
+        }
+    } else {
+        if (d[0] != response_count)
+            return;
+
+        if (d[0] == 0) {
+            response_len = d[1];
+
+            int length = (response_len < 2) ? response_len : 2;
+            data.append(d.substr(2,length));
+            response_len -= length;
+        } else {
+            int length = (response_len < 3) ? response_len : 3;   
+            data.append(d.substr(1,length));
+            response_len -= length;
+        }
+        response_count++;
+        if (response_count >= response_limit || response_len <= 0)
+            response_count = 0;
     }
 }
 

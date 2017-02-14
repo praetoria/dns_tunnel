@@ -13,6 +13,7 @@ class tunnel_dns : protected tunnel {
     void dns_to_data(std::string);
     int response_limit;
     int response_count;
+    int response_len;
     public:
         tunnel_dns(tunnel_type, dns::dns_type,dns::qtype,std::string);
         virtual tunnel_dns& operator<<(const std::string&);
