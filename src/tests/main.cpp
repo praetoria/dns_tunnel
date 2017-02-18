@@ -14,6 +14,7 @@
 #include "../message.h"
 #include "../tunnel_dns.h"
 #include "../convert_utility.h"
+#include "../pque.h"
 
 /* A subclass for testing purposes,
  * where the header of the dns_packet 
@@ -47,6 +48,9 @@ std::string test_tunnel_dns_out_q (int& success);
 std::string test_tunnel_dns_in_out_q (int& success);
 std::string test_tunnel_dns_out_r (int& success);
 
+// pque tests
+std::string test_pque (int& success);
+
 int main(int argc, char** argv) {
     std::cout << "Running tests...\n";
     std::vector<std::string(*)(int&)> tests = {
@@ -56,7 +60,8 @@ int main(int argc, char** argv) {
         test_convert_util,
         test_tunnel_dns_out_q,
         test_tunnel_dns_in_out_q,
-        test_tunnel_dns_out_r };
+        test_tunnel_dns_out_r,
+        test_pque };
 
     int succeeded = tests.size();
     for ( auto test : tests) {
@@ -370,5 +375,18 @@ std::string test_tunnel_dns_out_r (int& success) {
             std::cout << "IP " << a << '\n';
         }
     }
+    return ret;
+}
+
+std::string test_pque (int& success) {
+    std::string ret = "Pque test";
+    success = 1;
+    pque<std::string> Q(1);
+    Q.insert("7Test");
+    Q.insert("9Test");
+    Q.insert("0Test");
+    Q.insert("5Test");
+    Q.insert("3Test");
+    std::cout << Q.pop() << '\n';
     return ret;
 }
