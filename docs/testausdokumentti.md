@@ -38,6 +38,11 @@ Toinen testi testaa, että OUTGOING-tyyppisestä DNS-kyselytunnelista saatu data
 
 Kolmas testi testaa, että OUTGOING-tyyppisestä DNS-vastaustunnelista saatu data kodautuu oikein IP-osoitteiksi. IP-osoitteita on monta, sillä yksi DNS-vastauspaketti voi sisältää monta IP-osoitetta vastauksena kysytylle domain-nimelle.
 
+##pque
+
+Pque-luokkaa testataan lisäämällä sinne std::string-objekteja vectorista epäjärjestyksessä. Sen jälkeen sieltä poistetaan kaikki alkiot ja lisätään uuteen vektoriin. Vanha vektori järjestetään std::sort-funktiolla ja tulosvektoria verrataan vanhaan. Jos vektorit ovat identtisiä, testi menee läpi.
+Testissä tulee testatuksi, size(), insert(), remove() ja pop() -operaatiot pque-luokasta.
+
 ##Testien ajaminen
 
 Testit voidaan ajaa suorittamalla ```make``` tai ```make win``` komento src kansiossa riippuen siitä halutaanko kääntää ristiin windowsille vai kääntää natiivisti linuxille.
