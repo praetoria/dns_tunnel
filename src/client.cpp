@@ -42,6 +42,7 @@ int main(int argc, char** argv) {
             tun_in << Q.pop();
             Q.remove();
         }
+        pkt.clear();
         tun_in >> pkt;
         message msg_resp(pkt);
         std::cout << msg_resp.data << '\n';

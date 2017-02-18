@@ -27,7 +27,7 @@ tunnel_dns& tunnel_dns::operator>>(std::string& d) {
     if (t_type == OUTGOING) {
         d = data_to_dns();
     } else {
-        d = data;
+        d.append(data);
         data.clear();
     }
     return *this;

@@ -324,6 +324,7 @@ std::string test_tunnel_dns_out_q (int& success) {
     }
     data = "AAA AAA AAA AAA AAA AAA AAA AAAA";
     tun << data;
+    output.clear();
     tun >> output;
     // longer output so it gets split into two labels
     if (output != "414141204141412041414120414141204141412041414120414141204141.4141.helsinki.fi")
