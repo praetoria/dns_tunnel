@@ -9,6 +9,7 @@
 #include "dns_packet.h"
 #include "tunnel_dns.h"
 #include "message.h"
+#include "pque.h"
 
 
 int main(int argc, char** argv) {
@@ -32,8 +33,14 @@ int main(int argc, char** argv) {
         s << d.str();
         s >> pkt;
         dns_packet resp(pkt);
+        // Have to use priority que as the DNS standard does not guarantee the responses in order
+        pque<std::string> Q;
         for (auto r : resp.responses) {
-            tun_in << r.data;
+            Q.insert(r.data);
+        }
+        while (Q.size() > 0) {
+            tun_in << Q.pop();
+            Q.remove();
         }
         tun_in >> pkt;
         message msg_resp(pkt);
