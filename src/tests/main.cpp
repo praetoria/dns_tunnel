@@ -6,6 +6,7 @@
 #include <unistd.h>
 #endif
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <string>
 #include "../ip_utility.h"
@@ -380,13 +381,35 @@ std::string test_tunnel_dns_out_r (int& success) {
 
 std::string test_pque (int& success) {
     std::string ret = "Pque test";
-    success = 1;
+
+    std::vector<std::string> v,vres;
+    v.push_back("8test");
+    v.push_back("3test");
+    v.push_back("5test");
+    v.push_back("2test");
+    v.push_back("0test");
+    v.push_back("3test");
+    v.push_back("1test");
+    v.push_back("atest");
+
+    // new queue
     pque<std::string> Q(1);
-    Q.insert("7Test");
-    Q.insert("9Test");
-    Q.insert("0Test");
-    Q.insert("5Test");
-    Q.insert("3Test");
-    std::cout << Q.pop() << '\n';
+    for (auto s : v)
+        Q.insert(s);
+    while(Q.size() > 0) {
+        vres.push_back(Q.pop());
+        Q.remove();
+    }
+    std::sort(v.begin(),v.end(),std::less<std::string>());
+
+    success = vres == v;
+    if (!success) {
+        for (auto s : v)
+            std::cout << s << '\n';
+        std::cout << '\n';
+        for (auto s : vres)
+            std::cout << s << '\n';
+    }
+
     return ret;
 }

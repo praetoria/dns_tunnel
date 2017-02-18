@@ -285,10 +285,10 @@ std::string dns_packet::qname_to_ascii(const std::string& qname) {
         ret.append(qname.substr(pos,n));
         ret.append(1,'.');
         pos += n;
-        if (pos > qname.length()) return std::move(ret);
+        if (pos > qname.length()) return ret;
         n = qname[pos];
     }
-    return std::move(ret);
+    return ret;
 }
 /* internal, parse a response from bytes and add it to the responses
  * returns the new pos depending on consumed bytes
