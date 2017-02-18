@@ -1,6 +1,9 @@
 #ifndef _PQUE_H
 #define _PQUE_H
 #include <iostream>
+/* A priority que, where the smallest element is always returned when popped.
+ * The que is implemented as an array with insert, remove and pop operations.
+ */
 
 template <class T>
 class pque {
@@ -29,6 +32,7 @@ template <class T>
 pque<T>::~pque() {
     delete[] data;
 }
+
 template <class T>
 void pque<T>::insert(const T& obj) {
     m_size++;
@@ -45,17 +49,27 @@ void pque<T>::insert(const T& obj) {
     while(current > 0) {
         if (data[current-1] > data[last-1]) {
             std::swap(data[current-1],data[last-1]);
+            last = current;
+            current = current/2;
+        } else {
+            break;
         }
-        last = current;
-        current = current/2;
     }
 }
+
+/* Returns the element at the root of the heap (smallest).
+ * Does not remove the element, for that you have to call remove.
+ */
 template <class T>
 T pque<T>::pop() {
     if (m_size > 0)
         return data[0];
     throw "Index out of bounds";
 }
+
+/* Removes the smallest element in the heap and repairs the order.
+ * Returns void.
+ */
 template <class T>
 void pque<T>::remove() {
     if (m_size < 1)
@@ -74,12 +88,17 @@ void pque<T>::remove() {
     }
 }
 
+/* Prints the current array of data.
+ */
 template <class T>
 void pque<T>::print() {
     for (int i = 0; i < m_size; i++) {
         std::cout << data[i] << '\n';
     }
 }
+
+/* Returns the current size of the heap.
+ */
 template <class T>
 int pque<T>::size() {
     return m_size;
