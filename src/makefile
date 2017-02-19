@@ -45,10 +45,16 @@ server.${EXT}: ${OBJECTS} server.o
 test.o: tests/main.cpp
 	${CC} ${CFLAGS} tests/main.cpp -o test.o
 
+server.o: server.cpp
+	${CC} ${CFLAGS} server.cpp -o server.o
+
+client.o: client.cpp
+	${CC} ${CFLAGS} client.cpp -o client.o
+
 %.o : %.cpp %.h
 	${CC} ${CFLAGS} $< -o $@
 
-PHONY.: clean win winbin
+PHONY.: clean win winbin tests
 
 clean:
 	rm ${OBJECTS} test.o client.o server.o
