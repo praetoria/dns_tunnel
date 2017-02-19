@@ -8,7 +8,11 @@ Tällä hetkellä palvelin ja asiakas on molemmat kovakoodattu lähettämään j
 
 Ohjelmat kommunikoivat lähettämällä kahdentyyppisiä viestejä HEARTBEAT ja OK. HEARTBEAT viestit eivät sisällä dataa. Ne kertovat vain, että yhteys on vielä elossa ja mahdollistavat esimerkiksi palvelimen kommunikoinnin asiakkaalle, vaikka asiakkaalla ei olisi mitään dataa lähetettävänä. OK-tyyppiset viestit sisältävät datan, joka halutaan kuljettaa tunnelin läpi.
 
-## protokollat, paketit ja datan koodaus
+## toteutetu algoritmit
+
+Projektissa on tällä hetkellä toteutettu prioriteettijono, jolla järjestetään asiakkaassa vastaanotetut DNS-vastauksen vastausosion osat. DNS-protokolla ei nimittäin missään nimessä takaa, että vastaukset pysyisivät samassa järjestyksessä, missä ne lähetettiin, mikäli vastaus saapuu useamman kuin yhden DNS-palvelimen kautta.
+
+## protokollat ja paketit
 
 Kaikki protokolla-objektit on kuvattu objektien tavuesityksinä, jota tarvitaan niiden kuljettamiseen verkon yli.
 
@@ -17,7 +21,6 @@ Message-objekti, jota käytetään kommunikointiin on rakenteeltaan seuraavanlai
 |8 bit|     16 bit  | n bit|
 |-----|-------------|------|
 |type | data length | data |
-|-----|-------------|------|
 
 
 DNS-objekti on taas rakenteeltaan seuraavanlainen:
@@ -25,9 +28,10 @@ DNS-objekti on taas rakenteeltaan seuraavanlainen:
 |12 bytes |<= 25 bytes| n bytes   | n bytes     | n bytes     |
 |---------|-----------|-----------|-------------|-------------|
 | header  | questions | responses | authorities | additionals |
-|---------|-----------|-----------|-------------|-------------|
 
-Questions-osio, sisältää suurimmassa osassa tapauksia yhden kysymyksen. Responses-osio sisältää n-määrän vastauksia tavallisessa. Tavallisessa vastauksessa ei yleensä ole authority-osita, eikä additionals-osioita.
+Questions-osio, sisältää suurimmassa osassa tapauksia yhden kysymyksen. Responses-osio sisältää n-määrän vastauksia tavallisessa kyselyvastauksessa. Tavallisessa vastauksessa ei yleensä ole authority-osita, eikä additionals-osioita.
+
+Ylläolevassa kaaviossa on oletettu, että questions-osio sisältää vain yhden kysymyksen.
 
 Questions-osion kysymykset ovat kysymysmuotoa. Responses-, authorities- ja additionals-osiot ovat taas kaikki samaa vastausmuotoa.
 
