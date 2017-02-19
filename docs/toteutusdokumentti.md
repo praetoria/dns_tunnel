@@ -8,11 +8,11 @@ Tällä hetkellä palvelin ja asiakas on molemmat kovakoodattu lähettämään j
 
 Ohjelmat kommunikoivat lähettämällä kahdentyyppisiä viestejä HEARTBEAT ja OK. HEARTBEAT viestit eivät sisällä dataa. Ne kertovat vain, että yhteys on vielä elossa ja mahdollistavat esimerkiksi palvelimen kommunikoinnin asiakkaalle, vaikka asiakkaalla ei olisi mitään dataa lähetettävänä. OK-tyyppiset viestit sisältävät datan, joka halutaan kuljettaa tunnelin läpi.
 
-## toteutetu algoritmit
+## Toteutetut algoritmit
 
 Projektissa on tällä hetkellä toteutettu prioriteettijono, jolla järjestetään asiakkaassa vastaanotetut DNS-vastauksen vastausosion osat. DNS-protokolla ei nimittäin missään nimessä takaa, että vastaukset pysyisivät samassa järjestyksessä, missä ne lähetettiin, mikäli vastaus saapuu useamman kuin yhden DNS-palvelimen kautta.
 
-## protokollat ja paketit
+## Protokollat ja paketit
 
 Kaikki protokolla-objektit on kuvattu objektien tavuesityksinä, jota tarvitaan niiden kuljettamiseen verkon yli.
 
