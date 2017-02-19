@@ -15,17 +15,17 @@ Kaikki protokolla-objektit on kuvattu objektien tavuesityksinä, jota tarvitaan 
 Message-objekti, jota käytetään kommunikointiin on rakenteeltaan seuraavanlainen:
 
 |8 bit|     16 bit  | n bit|
-----------------------------
+|-----|-------------|------|
 |type | data length | data |
-----------------------------
+|-----|-------------|------|
 
 
 DNS-objekti on taas rakenteeltaan seuraavanlainen:
 
 |12 bytes |<= 25 bytes| n bytes   | n bytes     | n bytes     |
---------------------------------------------------------------
+|---------|-----------|-----------|-------------|-------------|
 | header  | questions | responses | authorities | additionals |
---------------------------------------------------------------
+|---------|-----------|-----------|-------------|-------------|
 
 Questions-osio, sisältää suurimmassa osassa tapauksia yhden kysymyksen. Responses-osio sisältää n-määrän vastauksia tavallisessa. Tavallisessa vastauksessa ei yleensä ole authority-osita, eikä additionals-osioita.
 
