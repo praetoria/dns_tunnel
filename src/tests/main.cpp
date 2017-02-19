@@ -411,6 +411,5 @@ std::string test_pque (int& success) {
         for (auto s : vres)
             std::cout << s << '\n';
     }
-
     return ret;
 }

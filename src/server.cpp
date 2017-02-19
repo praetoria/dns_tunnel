@@ -1,20 +1,21 @@
-#include "hsocket.h"
-#include "dns_packet.h"
-#include "tunnel_dns.h"
-#include "message.h"
-#include <iostream>
-#include <string>
 #ifdef WIN32
-#define usleep Sleep
+#include <winsock2.h>
 #include <windows.h>
+#define usleep Sleep
 #else
 #include <unistd.h>
 #endif
+#include <iostream>
+#include <string>
+#include "hsocket.h"
+#include "dns_packet.h"
+#include "message.h"
+#include "tunnel_dns.h"
 #define RESP_LIM 10
+message make_message(std::string& data, message::message_type t);
 void handle_incoming(tunnel_dns& tun_in, hsocket& s, dns_packet& last);
-bool handle_outgoing(tunnel_dns& tun_out, hsocket& s, dns_packet& last);
+void handle_outgoing(tunnel_dns& tun_out, hsocket& s, dns_packet& last);
 void handle_stdin(std::string& buffer);
-message make_message(std::string& data,message::message_type t);
 
 int main(int argc, char** argv) {
     hsocket s(hsocket::UDP);
@@ -32,7 +33,11 @@ int main(int argc, char** argv) {
     dns_packet last(1,dns::none);
     while (1) {
         usleep(10);
+#ifndef WIN32
+        // async IO does not work like this in Windows
+        // TODO thread or WaitForSingleObject solution
         handle_stdin(data_out);
+#endif
         handle_incoming(tun_in,s,last);
         tun_in >> data_in;
         message m(data_in);
@@ -59,9 +64,9 @@ message make_message(std::string& data,message::message_type t) {
     return m;
 }
 
-bool handle_outgoing(tunnel_dns& tun_out, hsocket& s, dns_packet& last) {
+void handle_outgoing(tunnel_dns& tun_out, hsocket& s, dns_packet& last) {
     if (last.rcode()!=dns::NON_ERROR || !tun_out.bytes_available())
-        return false;
+        return;
 
     for (int i = 0; i < RESP_LIM; i++) {
         std::string ip;
@@ -73,7 +78,7 @@ bool handle_outgoing(tunnel_dns& tun_out, hsocket& s, dns_packet& last) {
     last.set_response();
     s << last.str();
     last = dns_packet(1,dns::none);
-    return true;
+    return;
 }
 void handle_incoming(tunnel_dns& tun_in, hsocket& s, dns_packet& last) {
     std::string data;
@@ -99,7 +104,6 @@ void handle_stdin(std::string& buffer) {
     if (result != 0) {
         std::string tmp;
         std::getline(std::cin, tmp);
-        //std::cin >> tmp;
         buffer.append(tmp);
     }
 }
