@@ -12,7 +12,7 @@ message::message(message_type type, std::string data) : type(type), data(data) {
 
 /* Parses a message from bytes
  */
-message::message(std::string bytes) {
+message::message(std::string &bytes) {
     if (bytes.length() < 3) {
         this->type = M_ERROR;
         return;
@@ -29,6 +29,7 @@ message::message(std::string bytes) {
         return;
     }
     this->data = bytes.substr(3,data_len);
+    bytes.erase(0,data_len+3);
 }
 
 /* Converts a message into bytes, with the following form:

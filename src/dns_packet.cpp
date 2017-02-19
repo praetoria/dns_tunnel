@@ -67,10 +67,13 @@ bool operator==(const dns::RES_RECORD& lhs, const dns::RES_RECORD& rhs) {
 /* dns_packet member functions */
 
 dns_packet::dns_packet(unsigned short message_id, dns::dns_type type) {
+    this->header.rcode = 0;
     if (type == dns::response_t) {
         this->header.qr = 1;
-    } else {
+    } else if (type == dns::query_t) {
         this->header.qr = 0;
+    } else {
+        this->header.rcode = dns::NOT_IMPLEMENTED;
     }
     // recursion desired
     this->header.rd = 1;
@@ -88,7 +91,6 @@ dns_packet::dns_packet(unsigned short message_id, dns::dns_type type) {
     this->header.ans_count = 0;
     this->header.auth_count = 0;
     this->header.add_count = 0;
-    this->header.rcode = 0;
 }
 dns_packet::dns_packet(const std::string& bytes) : dns_packet(0) {
     int pos = 0;

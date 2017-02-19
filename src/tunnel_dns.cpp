@@ -9,6 +9,9 @@
  */
 tunnel_dns::tunnel_dns(tunnel_type t_type, dns::dns_type d_type, dns::qtype q_type, std::string domain) : tunnel(t_type),d_type(d_type),q_type(q_type),domain(domain),response_limit(1),response_count(0),response_len(0) {
 }
+size_t tunnel_dns::bytes_available() const {
+    return data.length();
+}
 
 tunnel_dns& tunnel_dns::operator<<(const std::string& d) {
     if (t_type == OUTGOING) {

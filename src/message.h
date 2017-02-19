@@ -4,13 +4,14 @@
 
 class message {
     public:
+    static const unsigned int MAXLEN = UINT16_MAX;
     enum message_type : uint8_t { HEARTBEAT, OK, M_ERROR };
     message_type type;
     std::string data;
 
     message(message_type,std::string data = "");
     
-    message(std::string); // construct a message from bytes
+    message(std::string&); // construct a message from bytes
     std::string str() const; // convert a message into bytes
 };
 bool operator!=(const message& lhs, const message& rhs);

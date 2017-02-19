@@ -51,4 +51,4 @@ test.o: tests/main.cpp
 PHONY.: clean win winbin
 
 clean:
-	rm ${OBJECTS} test.o
+	rm ${OBJECTS} test.o client.o server.o

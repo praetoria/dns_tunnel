@@ -111,5 +111,7 @@ class dns_packet {
         void set_response();
         // returns the query in byte form
         std::string str();
+
+        bool good();
 };
 #endif

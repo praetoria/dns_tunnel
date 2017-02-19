@@ -18,6 +18,7 @@ class tunnel_dns : protected tunnel {
         tunnel_dns(tunnel_type, dns::dns_type,dns::qtype,std::string);
         virtual tunnel_dns& operator<<(const std::string&);
         virtual tunnel_dns& operator>>(std::string&);
+        virtual size_t bytes_available() const;
         void set_response_limit(int);
 };
 #endif
