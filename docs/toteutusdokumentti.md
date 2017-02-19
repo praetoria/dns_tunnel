@@ -37,6 +37,8 @@ Questions-osion kysymykset ovat kysymysmuotoa. Responses-, authorities- ja addit
 
 Kysymys- ja vastausmuodoista voi lukea lisätietoja täältä http://www.zytrax.com/books/dns/ch15/.
 
+## Tiedonsiirto
+
 Aina, kun halutaan siirtää tietoa asiakkaalta palvelimelle tai palvelimelta asiakkaalle, tai molemmille samanaikaisesti, täytyy asiakkaan lähettää DNS-kysely ja palvelimen vastata siihen DNS-vastauksella. Tämän takia, vaikka dataa ei tarvisi kuljettaa juuri tietyllä hetkellä, lähetetään silti palvelimen ja asiakkaan välillä HEARTBEAT-viestejä.
 
 Yhden viestiobjektin lähetys toimii seuraavasti:
@@ -44,4 +46,3 @@ Yhden viestiobjektin lähetys toimii seuraavasti:
 Viestiobjekti muutetaan ensin tavuiksi, jotka lisätään uloskulkevaan puskuriin. Sen jälkeen puskurista otetaan sopiva pala, joka mahtuu yhteen DNS-kyselyyn. Asiakkaalla se tarkoittaa sitä, että datan täytyy sopia domain-nimeen ja palvelimella johonkin ennaltamääritettyyn määrään IP-osoitteita, kun käytetään A-tyypin vastauksia ja kyselyitä.
 
 Kun DNS-kyselyn data dekoodataan takaisin tavuvirraksi toisessa päässä, se lisätään sisääntulevaan puskuriin. Kun puskurissa on tarpeeksi dataa vastaanotetun message-paketin muodostamiseksi, se muutetaan tavuista taas messageksi. Messagen tyypistä riippuen ei tehdä mitään (HEARTBEAT) tai tulostetaan saatu data (OK).
-
