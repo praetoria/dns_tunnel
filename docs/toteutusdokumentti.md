@@ -10,7 +10,9 @@ Ohjelmat kommunikoivat lähettämällä kahdentyyppisiä viestejä HEARTBEAT ja 
 
 ## Toteutetut algoritmit
 
-Projektissa on tällä hetkellä toteutettu prioriteettijono, jolla järjestetään asiakkaassa vastaanotetut DNS-vastauksen vastausosion osat. DNS-protokolla ei nimittäin missään nimessä takaa, että vastaukset pysyisivät samassa järjestyksessä, missä ne lähetettiin, mikäli vastaus saapuu useamman kuin yhden DNS-palvelimen kautta.
+Projektissa on toteutettu prioriteettijono, jolla järjestetään asiakkaassa vastaanotetut DNS-vastauksen vastausosion osat. DNS-protokolla ei nimittäin missään nimessä takaa, että vastaukset pysyisivät samassa järjestyksessä, missä ne lähetettiin, mikäli vastaus saapuu useamman kuin yhden DNS-palvelimen kautta.
+
+Vectori on projektissa toteutettu dynaamisesti allokoituvana taulukkona. Tätä luokkaa käytetään DNS-kyselyluokan kyselyiden ja vastauksien säilyttämiseen.
 
 ## Protokollat ja paketit
 
