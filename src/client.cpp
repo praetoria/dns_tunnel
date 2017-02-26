@@ -18,6 +18,10 @@ message make_message(std::string& data,message::message_type t);
 message parse_message(std::string& data);
 
 int main(int argc, char** argv) {
+    if (argc < 3) {
+        std::cout << "Usage: " << argv[0] << " <server_ip> <port>\n";
+        return -1;
+    }
     hsocket s(hsocket::UDP);
     std::string domain = "example.org";
     tunnel_dns tun_in(tunnel::INCOMING, dns::response_t, dns::A, domain);
@@ -25,7 +29,7 @@ int main(int argc, char** argv) {
     message heartbeat(message::HEARTBEAT);
     tun_in.set_response_limit(10);
     std::string data_out,data_in;
-    s.connect(53,"127.0.0.1");
+    s.connect(std::stoi(argv[2]),argv[1]);
     s << hsocket::NONBLOCKING;
     int counter = 0;
     while (1) {

@@ -18,6 +18,10 @@ void handle_outgoing(tunnel_dns& tun_out, hsocket& s, dns_packet& last);
 void handle_stdin(std::string& buffer);
 
 int main(int argc, char** argv) {
+    if (argc < 3) {
+        std::cout << "Usage: " << argv[0] << " <listen_ip> <port>\n";
+        return -1;
+    }
     hsocket s(hsocket::UDP);
 
     std::string domain = "example.org";
@@ -27,7 +31,7 @@ int main(int argc, char** argv) {
     message heartbeat(message::HEARTBEAT);
 
     std::string data_out,data_in;
-    s.bind(53,"127.0.0.1");
+    s.bind(std::stoi(argv[2]),argv[1]);
 
     s << hsocket::NONBLOCKING;
     dns_packet last(1,dns::none);
