@@ -43,6 +43,10 @@ Kolmas testi testaa, että OUTGOING-tyyppisestä DNS-vastaustunnelista saatu dat
 Pque-luokkaa testataan lisäämällä sinne std::string-objekteja vectorista epäjärjestyksessä. Sen jälkeen sieltä poistetaan kaikki alkiot ja lisätään uuteen vektoriin. Vanha vektori järjestetään std::sort-funktiolla ja tulosvektoria verrataan vanhaan. Jos vektorit ovat identtisiä, testi menee läpi.
 Testissä tulee testatuksi, size(), insert(), remove() ja pop() -operaatiot pque-luokasta.
 
+##vec
+
+Vec-luokkaa testataan lisäämällä sinne std::string objekteja ja sen jälkeen vertaamalla sen sisältöä ja kokoa vastaavaan std::vectoriin. Lisäksi vec-instanssi alustetaan yhden kokoiseksi, jolloin myös resize-ominaisuus tulee testattua.
+
 ##Testien ajaminen
 
 Testit voidaan ajaa suorittamalla ```make``` tai ```make win``` komento src kansiossa riippuen siitä halutaanko kääntää ristiin windowsille vai kääntää natiivisti linuxille.

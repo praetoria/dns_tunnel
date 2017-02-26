@@ -33,12 +33,13 @@ int main(int argc, char** argv) {
         counter++;
         // get data to be sent from stdin
         handle_stdin(data_out);
-        if (!data_out.empty()) {
+        if (data_out.length() > 0) {
+            // consumes the data_out
             message m = make_message(data_out,message::OK);
             tun_out << m.str();
         }
         // send outgoing data from tunnel
-        if (counter > 10) {
+        if (counter > 100) {
             if (tun_out.bytes_available() == 0)
                 tun_out << heartbeat.str();
             handle_outgoing(tun_out, s);
@@ -57,6 +58,9 @@ int main(int argc, char** argv) {
 }
 
 
+/* Makes a message from data_out and consumes all data
+ * which is taken from data_out
+ */
 message make_message(std::string& data,message::message_type t) {
     unsigned int maxlen = message::MAXLEN;
     message m(t,data.substr(0,maxlen));

@@ -16,6 +16,7 @@
 #include "../tunnel_dns.h"
 #include "../convert_utility.h"
 #include "../pque.h"
+#include "../vec.h"
 
 /* A subclass for testing purposes,
  * where the header of the dns_packet 
@@ -52,6 +53,9 @@ std::string test_tunnel_dns_out_r (int& success);
 // pque tests
 std::string test_pque (int& success);
 
+// vec tests
+std::string test_vec (int& success);
+
 int main(int argc, char** argv) {
     std::cout << "Running tests...\n";
     std::vector<std::string(*)(int&)> tests = {
@@ -62,7 +66,8 @@ int main(int argc, char** argv) {
         test_tunnel_dns_out_q,
         test_tunnel_dns_in_out_q,
         test_tunnel_dns_out_r,
-        test_pque };
+        test_pque,
+        test_vec };
 
     int succeeded = tests.size();
     for ( auto test : tests) {
@@ -413,3 +418,20 @@ std::string test_pque (int& success) {
     }
     return ret;
 }
+
+std::string test_vec (int& success) {
+    std::string ret = "Vec test";
+    vec<std::string> v(1);
+    v.push_back("1test");
+    v.push_back("2test");
+    v.push_back("3test");
+    v.push_back("4test");
+    std::vector<std::string> res ({ "1test","2test","3test","4test" });
+    success = res.size() == v.size();
+    for (int i = 0; i < std::min(res.size(),v.size()); i++) {
+        success &= v[i] == res[i];
+    }
+    return ret;
+
+}
+

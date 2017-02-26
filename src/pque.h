@@ -7,48 +7,45 @@
 
 template <class T>
 class pque {
-    T* data;
-    int m_size;
-    int capacity;
+    T* m_data;
+    size_t m_size;
+    size_t m_capacity;
     public:
-    pque(int n = 5);
+    pque(size_t n = 5);
     ~pque();
     void insert(const T&);
-    T pop();
+    T pop() const;
     void remove();
-    int size();
-    void print();
+    size_t size() const;
+    void print() const;
 };
 
 template <class T>
-pque<T>::pque(int n) : m_size(0), capacity(n) {
-    if (n < 0) {
-        capacity = n = 0;
-    }
-    data = new T[n];
+pque<T>::pque(size_t n) : m_size(0), m_capacity(n) {
+    m_data = new T[n];
 }
 
 template <class T>
 pque<T>::~pque() {
-    delete[] data;
+    delete[] m_data;
 }
 
 template <class T>
 void pque<T>::insert(const T& obj) {
     m_size++;
-    if (m_size > capacity) {
-        int new_capacity = capacity*2;
+    if (m_size > m_capacity) {
+        size_t new_capacity = m_capacity*2;
         T* temp = new T[new_capacity];
-        std::copy(data,data+capacity,temp);
-        delete[] data;
-        data = temp;
-        capacity = new_capacity;
+        std::copy(m_data,m_data+m_capacity,temp);
+        delete[] m_data;
+        m_data = temp;
+        m_capacity = new_capacity;
     }
-    data[m_size-1] = obj;
-    int last = m_size, current = m_size/2;
+    m_data[m_size-1] = obj;
+    size_t last = m_size, current = m_size/2;
     while(current > 0) {
-        if (data[current-1] > data[last-1]) {
-            std::swap(data[current-1],data[last-1]);
+        if (m_data[current-1] > m_data[last-1]) {
+            std::swap(m_data[current-1],m_data[last-1]);
             last = current;
             current = current/2;
         } else {
@@ -61,9 +58,9 @@ void pque<T>::insert(const T& obj) {
  * Does not remove the element, for that you have to call remove.
  */
 template <class T>
-T pque<T>::pop() {
+T pque<T>::pop() const {
     if (m_size > 0)
-        return data[0];
+        return m_data[0];
     throw "Index out of bounds";
 }
 
@@ -74,16 +71,16 @@ template <class T>
 void pque<T>::remove() {
     if (m_size < 1)
         return;
-    std::swap(data[0],data[--m_size]);
-    int current = 0;
+    std::swap(m_data[0],m_data[--m_size]);
+    size_t current = 0;
     // Loop while there's leaves left
     while((current+1)*2-1 < m_size) {
-        int l_index = (current+1)*2-1;
-        int r_index = (l_index < m_size-1) ? l_index+1 : l_index;
-        int min_child = (data[l_index] < data[r_index]) ? l_index : r_index;
-        if (data[current] < data[min_child]) break;
+        size_t l_index = (current+1)*2-1;
+        size_t r_index = (l_index < m_size-1) ? l_index+1 : l_index;
+        size_t min_child = (m_data[l_index] < m_data[r_index]) ? l_index : r_index;
+        if (m_data[current] < m_data[min_child]) break;
 
-        std::swap(data[min_child],data[current]);
+        std::swap(m_data[min_child],m_data[current]);
         current = min_child;
     }
 }
@@ -91,16 +88,16 @@ void pque<T>::remove() {
 /* Prints the current array of data.
  */
 template <class T>
-void pque<T>::print() {
-    for (int i = 0; i < m_size; i++) {
-        std::cout << data[i] << '\n';
+void pque<T>::print() const {
+    for (size_t i = 0; i < m_size; i++) {
+        std::cout << m_data[i] << '\n';
     }
 }
 
 /* Returns the current size of the heap.
  */
 template <class T>
-int pque<T>::size() {
+size_t pque<T>::size() const {
     return m_size;
 }
 #endif

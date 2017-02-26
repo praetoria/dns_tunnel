@@ -2,6 +2,7 @@
 #define __DNS_H
 #include <vector>
 #include <string>
+#include "vec.h"
 
 namespace dns {
     // this is used when crerating a new dns_packet object
@@ -60,6 +61,12 @@ namespace dns {
         std::string name;
         struct R_DATA resource;
         std::string data;
+        RES_RECORD(const RES_RECORD& obj) {
+            name = obj.name;
+            resource = obj.resource;
+            data = obj.data;
+        }
+        RES_RECORD() {};
     } RES_RECORD;
 
     //Structure of a Query
@@ -94,11 +101,12 @@ class dns_packet {
         dns_packet(unsigned short id, dns::dns_type type = dns::none);
         // this creates a dns_packet from bytes
         dns_packet(const std::string&);
+        dns_packet(const dns_packet&);
 
-        std::vector<dns::QUERY> questions;
-        std::vector<dns::RES_RECORD> responses;
-        std::vector<dns::RES_RECORD> authorities;
-        std::vector<dns::RES_RECORD> additionals;
+        vec<dns::QUERY> questions;
+        vec<dns::RES_RECORD> responses;
+        vec<dns::RES_RECORD> authorities;
+        vec<dns::RES_RECORD> additionals;
 
         void add_question(std::string name, dns::qtype type = dns::ANY);
         void add_response(uint32_t data,dns::qtype type,unsigned int ttl = 0, uint16_t q_id = 0);

@@ -78,7 +78,6 @@ void handle_outgoing(tunnel_dns& tun_out, hsocket& s, dns_packet& last) {
     last.set_response();
     s << last.str();
     last = dns_packet(1,dns::none);
-    return;
 }
 void handle_incoming(tunnel_dns& tun_in, hsocket& s, dns_packet& last) {
     std::string data;
@@ -88,8 +87,8 @@ void handle_incoming(tunnel_dns& tun_in, hsocket& s, dns_packet& last) {
     dns_packet d(data);
     if (d.rcode() != dns::NON_ERROR || d.questions.size() == 0)
         return;
-    last = d;
-    std::string qname = d.questions[0].name;
+    last = std::move(d);
+    std::string qname = last.questions[0].name;
     tun_in << qname;
 }
 

@@ -1,4 +1,5 @@
 #include "dns_packet.h"
+#include "vec.h"
 #ifdef WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -102,7 +103,7 @@ dns_packet::dns_packet(const std::string& bytes) : dns_packet(0) {
     std::string h_bytes = bytes.substr(pos,sizeof(dns::DNS_HEADER));
     pos += sizeof(header);
     dns::DNS_HEADER header = *(dns::DNS_HEADER*)(h_bytes.data());
-    std::vector<dns::QUERY> questions;
+    vec<dns::QUERY> questions;
     int q_count = ntohs(header.q_count);
     // parse questions
     for (int i = 0; i < q_count; i++) {
@@ -196,7 +197,7 @@ void dns_packet::print_questions() const {
     }
 }
 void dns_packet::print_responses() const {
-    for (auto r : this->responses) {
+    for (const auto& r : this->responses) {
         std::cout << r.name << ": ";
         if (r.resource.type == htons(dns::A)) {
             in_addr a;
@@ -266,7 +267,7 @@ void dns_packet::add_response(std::string data,dns::qtype type, unsigned int ttl
     r.resource.ttl = ttl;
     r.resource.data_len = htons(data.length());
     r.data = data;
-    this->responses.push_back(std::move(r));
+    this->responses.push_back(r);
     this->header.ans_count = htons(this->responses.size());
     this->header.rcode = dns::NON_ERROR;
 }
@@ -322,11 +323,11 @@ int dns_packet::parse_response(const std::string& bytes,int pos,int len,rtype ty
     r.data = bytes.substr(pos,data_len);
     pos += data_len;
     if (type == RESPONSE) {
-        this->responses.push_back(std::move(r));
+        this->responses.push_back(r);
     } else if (type == AUTHORITY) {
-        this->authorities.push_back(std::move(r));
+        this->authorities.push_back(r);
     } else {
-        this->additionals.push_back(std::move(r));
+        this->additionals.push_back(r);
     }
     return pos;
 }
@@ -378,4 +379,14 @@ std::string dns_packet::str() {
 }
 unsigned char dns_packet::rcode() const {
     return header.rcode;
+}
+
+/* copy constructor
+ */
+dns_packet::dns_packet(const dns_packet& obj) {
+    header = obj.header;
+    questions = obj.questions;
+    responses = obj.responses;
+    authorities = obj.authorities;
+    additionals = obj.additionals;
 }
