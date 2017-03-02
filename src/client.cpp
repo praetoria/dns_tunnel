@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
             tun_out << m.str();
         }
         // send outgoing data from tunnel
-        if (counter > 100) {
+        if (counter > 1000) {
             if (tun_out.bytes_available() == 0)
                 tun_out << heartbeat.str();
             handle_outgoing(tun_out, s);

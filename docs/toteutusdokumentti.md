@@ -4,8 +4,6 @@
 
 Ohjelma koostuu kahdesta erillisestä ohjelmasta. Palvelimesta ja asiakkaasta. Palvelin kuuntelee DNS-viestejä ja asiakas lähettää niitä.
 
-Tällä hetkellä palvelin ja asiakas on molemmat kovakoodattu lähettämään ja vastaanottamaan viestejä portissa 53 vain paikallisesti osoitteessa 127.0.0.1.
-
 Ohjelmat kommunikoivat lähettämällä kahdentyyppisiä viestejä HEARTBEAT ja OK. HEARTBEAT viestit eivät sisällä dataa. Ne kertovat vain, että yhteys on vielä elossa ja mahdollistavat esimerkiksi palvelimen kommunikoinnin asiakkaalle, vaikka asiakkaalla ei olisi mitään dataa lähetettävänä. OK-tyyppiset viestit sisältävät datan, joka halutaan kuljettaa tunnelin läpi.
 
 ## Toteutetut algoritmit
