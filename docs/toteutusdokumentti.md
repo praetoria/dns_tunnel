@@ -30,8 +30,10 @@ handle_outgoing() O(n)
 ```
 Palvelin:
 ```
-handle_incoming()
-tun_in >> data
+handle_incoming() O(n)
+    dns_to_data() O(n)
+tun_in >> data O(n)
+    data.append()
 message m(data) O(n)
 ```
 
