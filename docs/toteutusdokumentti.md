@@ -12,6 +12,29 @@ Projektissa on toteutettu prioriteettijono, jolla järjestetään asiakkaassa va
 
 Vectori on projektissa toteutettu dynaamisesti allokoituvana taulukkona. Tätä luokkaa käytetään DNS-kyselyluokan kyselyiden ja vastauksien säilyttämiseen.
 
+## Aikavaativuus
+
+Yhden paketin lähettäminen asiakkaalta palvelimelle käy läpi seuraavat vaiheet:
+
+Asiakas:
+
+```
+handle_stdin()  O(n)
+m = make_message() O(n)
+tun_out << m.str() O(n)
+    data.append()
+handle_outgoing() O(n)
+    tun_out >> qname O(n)
+    d.add_question() O(n)
+    s << d.str() O(n)
+```
+Palvelin:
+```
+handle_incoming()
+tun_in >> data
+message m(data) O(n)
+```
+
 ## Protokollat ja paketit
 
 Kaikki protokolla-objektit on kuvattu objektien tavuesityksinä, jota tarvitaan niiden kuljettamiseen verkon yli.

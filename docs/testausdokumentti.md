@@ -1,5 +1,9 @@
 #Testausdokumentti
 
+##integraatiotestaus
+
+Integraatiotestausta en ole automatisoinut. Testasin manuaalisesti palvelin- ja asiakasohjelmia lähettämällä testiviestejä ja tiedostoja kumpaankin suuntaan. Samalla ajoin tcpdumppia, jolla tarkistin, että DNS-paketit näyttävät speksin mukaiselta ja niissä on data koodattu oikein.
+
 ##hsocket
 
 Hsocket-luokkaa on testattu avaamalla kaksi sockettia toinen vastaanottamaan ja toinen lähettämään. Näin saadaan testattu hsocket, luokan bind-, connect-, ja lähetys- ja vastaanottometodit.
