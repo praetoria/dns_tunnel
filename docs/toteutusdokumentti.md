@@ -14,6 +14,8 @@ Vectori on projektissa toteutettu dynaamisesti allokoituvana taulukkona. Tätä 
 
 ## Aikavaativuus
 
+Asiakkaalta palvelimelle viestin lähetys on O(n) ja palvelimelta asiakkalle on O(nlog(n)). Aikavaativuudet on käyty tarkemmin läpi alla.
+
 Yhden paketin lähettäminen asiakkaalta palvelimelle käy läpi seuraavat vaiheet:
 
 Asiakas:
@@ -31,7 +33,32 @@ handle_outgoing() O(n)
 Palvelin:
 ```
 handle_incoming() O(n)
-    dns_to_data() O(n)
+    tun_in << data
+        dns_to_data() O(n)
+tun_in >> data O(n)
+    data.append()
+message m(data) O(n)
+```
+
+Yhden paketin lähettäminen palvelimelta asiakkalle käy läpi seuraavat vaiheet:
+
+Palvelin:
+
+```
+handle_stdin()  O(n)
+m = make_message() O(n)
+tun_out << m.str() O(n)
+    data.append()
+handle_outgoing() O(n)
+    tun_out >> ip O(n)
+    last.add_response()
+    s << last.str() O(n)
+```
+Asiakas:
+```
+handle_incoming() O(nlog(n))
+    Q.insert() O(nlog(n))
+    tun_in << Q.pop() O(n)
 tun_in >> data O(n)
     data.append()
 message m(data) O(n)
